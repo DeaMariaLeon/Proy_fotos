@@ -1,0 +1,8 @@
+environment1 - Es el que tiene tensorflow
+No funcionaba libreria pathlib, hice update de tensorflow y de pip. Porque tensorflow lo instalé con pip. Pero pip mismo necesitaba update. Eso lo hice con un comando de python ...?
+
+Para leer los subdirectorios primero usé os.walk. 
+Después puse tensorflow y pathlib
+
+Las fotos se tienen que dividir entre 255 para que queden entre 0 y 1 si no no se pueden graficar como lo hice.
+
