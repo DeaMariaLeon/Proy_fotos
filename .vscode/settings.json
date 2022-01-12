@@ -1,0 +1,15 @@
+{
+    "python.pythonPath": "/Users/dealeon/Anaconda/anaconda3/envs/environment1/bin/python",
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "test*.py"
+    ]
+}
