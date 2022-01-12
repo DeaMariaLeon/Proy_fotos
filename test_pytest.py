@@ -1,4 +1,7 @@
 from ver_fotos_enpath import get_names 
+from visualizar_enpython import check_outputhtml
+from pathlib import Path
+from bs4 import BeautifulSoup
 
 
 def test_names():
@@ -33,4 +36,27 @@ def test_names2():
 def test_path():
 
     path = " "
-    assert get_names(path) == "Correct your path"                    
+    assert get_names(path) == "Correct your path"     
+
+
+def test_output_newfile():
+    path = "/Users/dealeon/Dir_de_prueba2"
+    used_path = False 
+    new_output = True 
+    soup = None 
+    num_of_fotos = 0
+    assert (used_path, new_output, soup, num_of_fotos) == check_outputhtml(path, "x")
+
+def test_output_existingfile():
+    output_file = "output_copy.html"
+    if Path(output_file).exists(): 
+        with open(output_file, "r") as html:
+            soup = BeautifulSoup(html, "html.parser")
+    else:
+        soup = ""        
+    path = "/Users/dealeon/Dir_de_prueba"
+    used_path = False 
+    new_output = False 
+    num_of_fotos = 5
+    
+    assert (used_path, new_output, soup, num_of_fotos) == check_outputhtml(path, "output_copy.html")
