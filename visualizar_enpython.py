@@ -61,6 +61,9 @@ def process_pics(path, num_ofpics):
         
     return tmp_output        
 
+def write_soup(output_file, text):
+    with open(output_file, "w") as f:
+                    f.write(text)
 
 def build_html(path, used_path, new_output, soup, num_ofpics, output_file):
     """ Function to build html document. If it is new, it needs a header.
@@ -96,19 +99,47 @@ def build_html(path, used_path, new_output, soup, num_ofpics, output_file):
                     f.write(str(soup))
     return            
 
+def remove_subdirectory(path, soup, output_file):
+    dir_to_remove = "<h1>" + path + "</h1>"
+    pic_names = get_names(path)
+    number_ofpics = len(pic_names)
+    #for p in pic_names:
+        #os.remove(p)
+        
+    soup2 = BeautifulSoup(dir_to_remove, "html.parser")
+    tag = soup2.h1
+    headers = soup.select("h1")
+    for h in headers:
+        if h == tag:
+
+            links_in_path = h.find_next_siblings("a", limit = number_ofpics)
+            for l in links_in_path: l.decompose()    
+            h.decompose()
+            soup.smooth()
+            write_soup(output_file, str(soup))    
+            return 
+    return    
+
+
 
 #path = "/Users/dealeon/Pictures/Fotos/Noruega2009"
 path = "/Users/dealeon/Dir_de_prueba"
+#path = "/Users/dealeon/Dir_de_prueba2"
 #path = "/Users/dealeon/Pictures/Fotos - library/2019"
 #path = "/Users/dealeon/Pictures/Fotos - library/22 June 2015"
 #path = "/Users/dealeon/Pictures/Fotos - library/5 April 2015"
 print(os.getcwd())
 output_file = "output.html"
+remove_flag = True
 
 if Path(path).exists():
     used_path, new_output, soup, num_ofpics = check_outputhtml(path, output_file)
 
-    build_html(path, used_path, new_output, soup, num_ofpics, output_file)
+    if remove_flag:
+        remove_subdirectory(path, soup, output_file)
+    else:    
+        build_html(path, used_path, new_output, soup, num_ofpics, output_file)
+
 
 
 #print(soup.prettify())
