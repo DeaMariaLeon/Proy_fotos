@@ -4,6 +4,8 @@ import tensorflow as tf
 from bs4 import BeautifulSoup
 from pathlib import Path
 import os
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 
 
@@ -48,15 +50,28 @@ def process_pics(path, num_ofpics):
     tmp_output = ''
     names = get_names(path) #get the entire name of all the pictures to process (including their path)
     for x, i in enumerate(names):
-        foto = tf.io.read_file(i)
-        foto = tf.io.decode_jpeg(foto)
-        foto = tf.image.convert_image_dtype(foto, tf.float32)
-        foto = tf.image.resize(foto, [128, 128], preserve_aspect_ratio=True)
-        img = tf.keras.preprocessing.image.array_to_img(foto)
-        img_string = "/Users/dealeon/Directorio_fotostf/fotito" + str(x + num_ofpics) + ".jpg"
-        img.save(img_string)  
-        i = i.replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
+        # foto = tf.io.read_file(i)
+        # foto = tf.io.decode_jpeg(foto)
+        # foto = tf.image.convert_image_dtype(foto, tf.float32)
+        # foto = tf.image.resize(foto, [128, 128], preserve_aspect_ratio=True)
+        # img = tf.keras.preprocessing.image.array_to_img(foto)
         
+        img_string = "/Users/dealeon/Directorio_fotostf/fotito" + str(x + num_ofpics) + ".jpg"
+
+        #img_string = "/Users/dealeon/Documents/proy_fotos/test_pic_orientation_Directorio_fotostf/fotito" + str(x + num_ofpics) + ".jpg"
+        #img_string = "/Users/dealeon/Documents/Directorio_fotostf/fotito" + str(x + num_ofpics) + ".jpg"
+        
+        img = Image.open(i)
+        img.thumbnail((128,128), Image.ANTIALIAS)
+        
+        try:
+            exif = img.info['exif']
+            img.save(img_string, exif = exif)  
+        except KeyError:    
+            img.save(img_string)
+
+        
+        i = i.replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
         tmp_output += '<a href=' + i  +'><img src="' + img_string + '"></img></a>\n'
         
     return tmp_output        
@@ -128,9 +143,12 @@ path = "/Users/dealeon/Dir_de_prueba"
 #path = "/Users/dealeon/Pictures/Fotos - library/2019"
 #path = "/Users/dealeon/Pictures/Fotos - library/22 June 2015"
 #path = "/Users/dealeon/Pictures/Fotos - library/5 April 2015"
+#path = '../test_pic_orientation'
+#path = '/Users/dealeon/Documents/proy_fotos/test_pic_orientation'
+path  ='/Users/dealeon/Documents/My Pictures'
 print(os.getcwd())
 output_file = "output.html"
-remove_flag = True
+remove_flag = False
 
 if Path(path).exists():
     used_path, new_output, soup, num_ofpics = check_outputhtml(path, output_file)
