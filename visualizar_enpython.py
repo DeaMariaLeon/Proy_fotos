@@ -64,10 +64,16 @@ def process_pics(path, num_ofpics):
         img = Image.open(i)
         img.thumbnail((128,128), Image.ANTIALIAS)
         
+        
+        #picture orientation info is in the exif info of the JPEG file is this exif info has been created by the camera
+        #So we retrieve this information from the uncompressed JPEG and save it into the compressed one if this information exists
+        
         try:
+            
             exif = img.info['exif']
             img.save(img_string, exif = exif)  
         except KeyError:    
+            #If the exif information is not available in the original JPEG file, then there will be a dictionary Key Error 
             img.save(img_string)
 
         
