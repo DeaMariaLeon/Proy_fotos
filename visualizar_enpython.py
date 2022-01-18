@@ -147,7 +147,7 @@ def remove_subdirectory(path, soup, output_file):
 
 #path = "/Users/dealeon/Pictures/Fotos/Noruega2009"
 #path = "/Users/dealeon/Dir_de_prueba2"
-#path = "/Users/dealeon/Dir_de_prueba"
+path = "/Users/dealeon/Dir_de_prueba"
 #path = "/Users/dealeon/Documents/Practice II/Proy_Fotos/fotos"
 #path = "/Users/dealeon/Pictures/Fotos - library/2019"
 #path = "/Users/dealeon/Pictures/Fotos - library/22 June 2015"
