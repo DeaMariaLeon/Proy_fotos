@@ -45,7 +45,8 @@ def test_output_newfile():
     new_output = True 
     soup = None 
     num_of_fotos = 0
-    assert (used_path, new_output, soup, num_of_fotos) == check_outputhtml(path, "x")
+    last_fotito = 0
+    assert (used_path, new_output, soup, num_of_fotos, last_fotito) == check_outputhtml(path, "x")
 
 def test_output_existingfile():
     output_file = "output_copy.html"
@@ -58,5 +59,5 @@ def test_output_existingfile():
     used_path = False 
     new_output = False 
     num_of_fotos = 5
-    
-    assert (used_path, new_output, soup, num_of_fotos) == check_outputhtml(path, "output_copy.html")
+    last_fotito = 4
+    assert (used_path, new_output, soup, num_of_fotos, last_fotito) == check_outputhtml(path, "output_copy.html")
