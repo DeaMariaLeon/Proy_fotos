@@ -6,6 +6,7 @@ import os
 from PIL import Image
 from PIL.ExifTags import TAGS
 import re
+import json
 
 def check_outputhtml(path, output_file):
     """Function to check if the output html file  exists and if the 
@@ -147,16 +148,25 @@ def remove_subdirectory(path, soup, output_file):
 
 #path = "/Users/dealeon/Pictures/Fotos/Noruega2009"
 #path = "/Users/dealeon/Dir_de_prueba2"
-path = "/Users/dealeon/Dir_de_prueba"
+#path = "/Users/dealeon/Dir_de_prueba"
 #path = "/Users/dealeon/Documents/Practice II/Proy_Fotos/fotos"
 #path = "/Users/dealeon/Pictures/Fotos - library/2019"
 #path = "/Users/dealeon/Pictures/Fotos - library/22 June 2015"
 #path = "/Users/dealeon/Pictures/Fotos - library/5 April 2015"
 
-fotito_directory = "/Users/dealeon/Directorio_fotostf2/"
-print(os.getcwd())
-output_file = "output.html"
-remove_flag = False #Set to True to remove subirectories in output html file 
+try:
+    with open("variables.json", "r") as json_file:
+        data = json.load(json_file)
+        
+        path = data["PATH"]
+        
+        
+        fotito_directory = data["FOTITO_DIRECTORY"]
+        print(os.getcwd())
+        output_file = data["OUTPUT_FILE"]
+        remove_flag = data["REMOVE_FLAG"] #Set to True to remove subirectories in output html file 
+except KeyError:
+    print("Couldn't open variables.json file")
 
 if Path(path).exists():
     used_path, new_output, soup, num_ofpics, last_fotito = check_outputhtml(path, output_file)
