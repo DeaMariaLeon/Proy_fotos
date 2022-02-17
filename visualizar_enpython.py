@@ -55,7 +55,7 @@ def process_pics(path, fotito_directory, last_fotito):
     for x, i in enumerate(names):
  
         img_string = fotito_directory + "fotito" + str(x + 1 + last_fotito) + ".jpg"
-        img = Image.open(i)
+        img = Image.open(i[0])
         img.thumbnail((128,128), Image.ANTIALIAS)
 
         #picture orientation info is in the exif info of the JPEG file is this exif info has been created by the camera
@@ -68,8 +68,8 @@ def process_pics(path, fotito_directory, last_fotito):
         except KeyError:    
             #If the exif information is not available in the original JPEG file, then there will be a dictionary Key Error 
             img.save(img_string)
-        i = i.replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
-        tmp_output += '<a href=' + i  +'><img src="' + img_string + '"></img></a>\n'
+        j = i[0].replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
+        tmp_output += '<a href=' + j  +'><img src="' + img_string + '"></img></a>\n'
         
         
     return tmp_output        
@@ -83,7 +83,7 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         If it is not new, the path and the pictures with their links, need to be inserted.
     """ 
     if used_path: 
-        print("Path already on output.html file")
+        print("Path already in html file")
         return
     
     output = ''
@@ -108,8 +108,8 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         tmp_output = process_pics(path, fotito_directory, last_fotito)
         soup2 = BeautifulSoup(tmp_output, "html.parser")
         soup.body.append(soup2)
-        with open(output_file, "w") as f:
-                    f.write(str(soup))
+        write_soup(output_file, str(soup) )
+        
     return            
 
 def remove_subdirectory(path, soup, output_file):
@@ -176,7 +176,8 @@ if Path(path).exists():
         remove_subdirectory(path, soup, output_file)
     else:    
         build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory)
-                   
+else:
+    print(path, " does not exist :(")                   
 #print(soup.prettify())
 
 
