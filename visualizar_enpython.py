@@ -48,7 +48,7 @@ def process_pics(path, fotito_directory, last_fotito):
         will be added to an html document
         path: root directory
         fotito_directory: where the small photos will be stored"""
-    DATABASE = 'fotosDB.db'
+    #DATABASE = 'fotosDB.db'
     tmp_output = ''
     names = get_names(path) #get the entire name of all the pictures to process (including their path)
     last_fotito
@@ -59,7 +59,7 @@ def process_pics(path, fotito_directory, last_fotito):
 
         fotito_name = "fotito" + str(x + 1 + last_fotito) + ".jpg"
         img_string = fotito_directory + "/" + fotito_name
-        img = Image.open(i)
+        img = Image.open(i[0])
         img.thumbnail((224,224), Image.ANTIALIAS)
 
 
