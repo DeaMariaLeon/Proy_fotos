@@ -7,6 +7,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 import re
 import json
+#import sqlite3
 
 def check_outputhtml(path, output_file):
     """Function to check if the output html file  exists and if the 
@@ -16,9 +17,10 @@ def check_outputhtml(path, output_file):
        path: Root directory where I want to take all the pictures from.
        output_file: html file name   
        used_path: boolean, indicates that the path has been used before
-       new_output = boolean to say that the html is a new document (will need a header)  
+       new_output: boolean to say that the html is a new document (will need a header)  
        soup: the whole html document
-       num_of_fotos = number of pics in the document
+       num_of_fotos: number of pics in the document
+       last_fotito: the number of the last small photo in html document 
              
     """
     if Path(output_file).exists(): 
@@ -40,23 +42,26 @@ def check_outputhtml(path, output_file):
     num_of_fotos = len(links)  
     return used_path, new_output, soup, num_of_fotos, last_fotito
     
-
-
 def process_pics(path, fotito_directory, last_fotito):
     """ Process the pictures to resize them (to smaller resolution),
         gives them a new name and adds name and link to a variable that
         will be added to an html document
         path: root directory
-        num_ofpics: number of pictures already in the html document"""
-
+        fotito_directory: where the small photos will be stored"""
+    DATABASE = 'fotosDB.db'
     tmp_output = ''
     names = get_names(path) #get the entire name of all the pictures to process (including their path)
     last_fotito
+    #con = sqlite3.connect(DATABASE)
+    #cur = con.cursor()
+    print("Control-C or Delete to interrupt\n")
     for x, i in enumerate(names):
- 
-        img_string = fotito_directory + "fotito" + str(x + 1 + last_fotito) + ".jpg"
+
+        fotito_name = "fotito" + str(x + 1 + last_fotito) + ".jpg"
+        img_string = fotito_directory + "/" + fotito_name
         img = Image.open(i)
-        img.thumbnail((128,128), Image.ANTIALIAS)
+        img.thumbnail((224,224), Image.ANTIALIAS)
+
 
         #picture orientation info is in the exif info of the JPEG file is this exif info has been created by the camera
         #So we retrieve this information from the uncompressed JPEG and save it into the compressed one if this information exists
@@ -68,10 +73,12 @@ def process_pics(path, fotito_directory, last_fotito):
         except KeyError:    
             #If the exif information is not available in the original JPEG file, then there will be a dictionary Key Error 
             img.save(img_string)
-        i = i.replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
-        tmp_output += '<a href=' + i  +'><img src="' + img_string + '"></img></a>\n'
+        j = i[0].replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
+        tmp_output += '<a href=' + j  +'><img src="' + img_string + '"></img></a>\n'
         
-        
+        #cur.execute('INSERT INTO fotostb (name, link, object_id, directoryname_id) VALUES (?,?,?,?)', [fotito_name, i, 0, 0])
+    #con.commit()
+    #con.close()
     return tmp_output        
 
 def write_soup(output_file, text):
@@ -83,7 +90,7 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         If it is not new, the path and the pictures with their links, need to be inserted.
     """ 
     if used_path: 
-        print("Path already on output.html file")
+        print("Path already in html file")
         return
     
     output = ''
@@ -97,8 +104,7 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         output+= process_pics(path, fotito_directory, last_fotito) 
         output+= '</body>\n'
         output+= '</html>\n'
-        with open(output_file, "w") as new_html:
-            new_html.write(output)
+
 
     else:
         tag = soup.new_tag("h1")
@@ -108,9 +114,8 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         tmp_output = process_pics(path, fotito_directory, last_fotito)
         soup2 = BeautifulSoup(tmp_output, "html.parser")
         soup.body.append(soup2)
-        with open(output_file, "w") as f:
-                    f.write(str(soup))
-    return            
+        output = str(soup)
+    return output           
 
 def remove_subdirectory(path, soup, output_file):
     dir_to_remove = "<h1>" + path + "</h1>"
@@ -146,25 +151,15 @@ def remove_subdirectory(path, soup, output_file):
             return 
     return    
 
-#path = "/Users/dealeon/Pictures/Fotos/Noruega2009"
-#path = "/Users/dealeon/Dir_de_prueba2"
-#path = "/Users/dealeon/Dir_de_prueba"
-#path = "/Users/dealeon/Documents/Practice II/Proy_Fotos/fotos"
-#path = "/Users/dealeon/Pictures/Fotos - library/2019"
-#path = "/Users/dealeon/Pictures/Fotos - library/22 June 2015"
-#path = "/Users/dealeon/Pictures/Fotos - library/5 April 2015"
-
 try:
     with open("variables.json", "r") as json_file:
         data = json.load(json_file)
-        
-        path = data["PATH"]
-        
-        
         fotito_directory = data["FOTITO_DIRECTORY"]
         print(os.getcwd())
         output_file = data["OUTPUT_FILE"]
         remove_flag = data["REMOVE_FLAG"] #Set to True to remove subirectories in output html file 
+        path = data["PATH"]
+
 except KeyError:
     print("Couldn't open variables.json file")
 
@@ -175,8 +170,8 @@ if Path(path).exists():
         
         remove_subdirectory(path, soup, output_file)
     else:    
-        build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory)
+        output = build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory)
+        if output:
+            write_soup(output_file, output)
                    
-#print(soup.prettify())
-
 
