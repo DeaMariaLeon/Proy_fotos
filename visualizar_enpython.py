@@ -10,20 +10,32 @@ import json
 #import sqlite3
 
 def check_outputhtml(path, output_file):
-    """Function to check if the output html file  exists and if the 
-       path has not already been processed (used) before. 
+    """Function to check if the output html file  exists and if the
+       path has not already been processed (used) before.
        All the resized pictures and their links will be added on this output file.
-       
-       path: Root directory where I want to take all the pictures from.
-       output_file: html file name   
-       used_path: boolean, indicates that the path has been used before
-       new_output: boolean to say that the html is a new document (will need a header)  
-       soup: the whole html document
-       num_of_fotos: number of pics in the document
-       last_fotito: the number of the last small photo in html document 
-             
+
+       Inputs
+       ------
+       path: string
+           Root directory to read all the pictures.
+       output_file: string
+           html file name
+
+       Returns
+       -------
+       used_path: boolean
+           Flags that the path is already included in the html output file
+       new_output: boolean
+           Flags that the html file is a new document (will need a header)
+       soup: string (html file)
+           The whole html document
+       num_of_fotos: integer
+           Number of pics in the document
+       last_fotito: integer
+           The number of the last rezised photo in html document
     """
-    if Path(output_file).exists(): 
+
+    if Path(output_file).exists():
         with open(output_file, "r") as html:
             soup = BeautifulSoup(html, "html.parser")
             heads = [tag.string for tag in soup.find_all('h1')] # finds all the headers (paths processed before)
@@ -32,22 +44,32 @@ def check_outputhtml(path, output_file):
             #last_fotito = max([int(re.search('[0-9]+', f).group(0)) for f in fotitos])
             last_fotito = max([int(re.findall('[0-9]+', f)[-1]) for f in fotitos])
         used_path = path in heads #if the path exists, I don't want to process it again
-        new_output = False 
-    else:    
+        new_output = False
+    else:
         used_path = False
         new_output = True
         links = []
         soup = None
         last_fotito = 0
-    num_of_fotos = len(links)  
+    num_of_fotos = len(links)
     return used_path, new_output, soup, num_of_fotos, last_fotito
-    
+
 def process_pics(path, fotito_directory, last_fotito):
-    """ Process the pictures to resize them (to smaller resolution),
+    """ Rescale the pictures to smaller resolution,
         gives them a new name and adds name and link to a variable that
         will be added to an html document
-        path: root directory
-        fotito_directory: where the small photos will be stored"""
+
+        Inputs
+        ------
+        path: string
+            Root directory to read all the pictures.
+        fotito_directory: string
+            Diretory where the scaled photos will be stored
+
+        Returns
+        -------
+        tmp_output: string (html file)
+    """
     #DATABASE = 'fotosDB.db'
     tmp_output = ''
     names = get_names(path) #get the entire name of all the pictures to process (including their path)
@@ -62,24 +84,23 @@ def process_pics(path, fotito_directory, last_fotito):
         img = Image.open(i[0])
         img.thumbnail((224,224), Image.ANTIALIAS)
 
-
         #picture orientation info is in the exif info of the JPEG file is this exif info has been created by the camera
         #So we retrieve this information from the uncompressed JPEG and save it into the compressed one if this information exists
-        
+
         try:
-            
+
             exif = img.info['exif']
-            img.save(img_string, exif = exif)  
-        except KeyError:    
-            #If the exif information is not available in the original JPEG file, then there will be a dictionary Key Error 
+            img.save(img_string, exif = exif)
+        except KeyError:
+            #If the exif information is not available in the original JPEG file, then there will be a dictionary Key Error
             img.save(img_string)
         j = i[0].replace(" ", "%20") #subdirectories (i) might have spaces, links get broken if not replaced with %20
         tmp_output += '<a href=' + j  +'><img src="' + img_string + '"></img></a>\n'
-        
+
         #cur.execute('INSERT INTO fotostb (name, link, object_id, directoryname_id) VALUES (?,?,?,?)', [fotito_name, i, 0, 0])
     #con.commit()
     #con.close()
-    return tmp_output        
+    return tmp_output
 
 def write_soup(output_file, text):
     with open(output_file, "w") as f:
@@ -88,23 +109,22 @@ def write_soup(output_file, text):
 def build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory):
     """ Function to build html document. If it is new, it needs a header.
         If it is not new, the path and the pictures with their links, need to be inserted.
-    """ 
-    if used_path: 
+    """
+    if used_path:
         print("Path already in html file")
         return
-    
+
     output = ''
     if new_output:
-        
+
         output = '<!DOCTYPE html>\n'
         output+= '<html>\n'
         output+= '<head><title>Fotos de Dea</title></head>\n'
         output+= '<body>\n'
         output+= '<h1>' + path + '</h1>'
-        output+= process_pics(path, fotito_directory, last_fotito) 
+        output+= process_pics(path, fotito_directory, last_fotito)
         output+= '</body>\n'
         output+= '</html>\n'
-
 
     else:
         tag = soup.new_tag("h1")
@@ -115,63 +135,29 @@ def build_html(path, used_path, new_output, soup, output_file, last_fotito, foti
         soup2 = BeautifulSoup(tmp_output, "html.parser")
         soup.body.append(soup2)
         output = str(soup)
-    return output           
+    return output
 
-def remove_subdirectory(path, soup, output_file):
-    dir_to_remove = "<h1>" + path + "</h1>"
-    soup2 = BeautifulSoup(dir_to_remove, "html.parser")
-    tag = soup2.h1
-    headers = soup.select("h1")
-    
-    if tag not in headers:
-        print("Path not in", output_file)
-        exit()
-
-    pic_names = get_names(path)
-    number_ofpics = len(pic_names)
-
-    for h in headers:
-        if h == tag:
-            if len(headers) == 1:
-                while True:
-                    erase_file = input("Your html file is empty, do you want to erase it (Y/N)? ")
-                    if erase_file.upper() == "Y":
-                        print("Deleting ", output_file)
-                        os.remove(output_file)
-                        exit()
-                    else:
-                        exit()
-            links_in_path = h.find_next_siblings("a", limit = number_ofpics)
-            for l in links_in_path: 
-                l.next_sibling.replace_with('')
-                l.decompose()    
-            h.decompose()
-
-            write_soup(output_file, str(soup))    
-            return 
-    return    
+def check_input(directory):
+    return Path(directory).exists() and not (directory.endswith("/"))
 
 try:
     with open("variables.json", "r") as json_file:
         data = json.load(json_file)
-        fotito_directory = data["FOTITO_DIRECTORY"]
+        fotito_directory = data["SCALED_PHOTO_DIRECTORY"] #This should not have a final "/"
         print(os.getcwd())
         output_file = data["OUTPUT_FILE"]
-        remove_flag = data["REMOVE_FLAG"] #Set to True to remove subirectories in output html file 
-        path = data["PATH"]
+        path = data["PHOTO_ORIGIN_PATH"] #This should not have a final "/"
 
 except KeyError:
-    print("Couldn't open variables.json file")
+    print("Could not open variables.json file")
 
-if Path(path).exists():
+if check_input(fotito_directory) and check_input(path):
     used_path, new_output, soup, num_ofpics, last_fotito = check_outputhtml(path, output_file)
+    output = build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory)
 
-    if remove_flag:
-        
-        remove_subdirectory(path, soup, output_file)
-    else:    
-        output = build_html(path, used_path, new_output, soup, output_file, last_fotito, fotito_directory)
-        if output:
-            write_soup(output_file, output)
-                   
+    if output:
+        write_soup(output_file, output)
+else:
+    print("Please check your path names in variables.json file")
+
 
