@@ -82,7 +82,7 @@ def process_pics(path, fotito_directory, last_fotito):
         fotito_name = "fotito" + str(x + 1 + last_fotito) + ".jpg"
         img_string = fotito_directory + "/" + fotito_name
         img = Image.open(i[0])
-        img.thumbnail((224,224), Image.ANTIALIAS)
+        img.thumbnail((224,224))
 
         #picture orientation info is in the exif info of the JPEG file is this exif info has been created by the camera
         #So we retrieve this information from the uncompressed JPEG and save it into the compressed one if this information exists
