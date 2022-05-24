@@ -1,14 +1,69 @@
-# Proy_fotos
+# Photo project - Proyecto Fotos
 
-This tool reads all photos from a subdirectory and creates a html file. The html file will have scaled versions of the photos,
-and links to the original file.
+This tool reads all photos from a directory and creates a html file with scaled down versions of those photos. The original photo will be shown if its thumnail is clicked.
+The scaled down copies of the photos are stored in another directory.
+I have only tested the scripts with a mac. I did this tool because I did not like the way that the mac's "Photos" program works.
 
-It uses python 3.10.4 and the libraries included in file <mark>requirements.txt</mark>
+## To see the example output:
 
-The main program to run is <mark>visualizar_enpython.py</mark>.
-The path to the original photos, the subdirectory to keep the scaled-down photos have to be entered in the file <mark>variables.json</mark>
-Also the name of the html file to be created is in variables.json file.
+The file **output.html** is an example with just one photo. It can be opened with any browser.
 
-If you delete the output html file, you should delete the scaled-down photos from their subdirectory.
+If you don't want to clone or copy the proyect to your local machine, but want to see the example, you still need the subdirectories of Dir_scaled and Dir_de_prueba.
 
-The program will not work with paths already included in the output html file. But this html file can be deleted and created again running the main <mark>visualizar_enpython.py</mark>
+## Installation
+
+If you want to clone it, use this git command from a terminal or console:
+
+git clone  https://github.com/DeaMariaLeon/Proy_fotos.git
+
+I used:
+
+Python 3.10.4
+beautifulsoup4==4.11.1
+numpy==1.22.4
+pathlib==1.0.1
+Pillow==9.1.1
+
+There is a file **requirements.txt** that you can use if you want to use pip.
+First you need to be inside the project's subdirectory with:
+
+cd name_of_your_directory
+
+Your environment needs to be active - if you are using one.
+
+To learn how to use vscode with [virtual environments](https://code.visualstudio.com/docs/python/environments#_where-the-extension-looks-for-environments).
+
+To install the requirements file (you should have python 3 already installed by now) you can type:
+
+**pip install -r requirements.txt**
+
+## Inputs:
+
+The inputs are located in the file **variables.json**. They are:
+
+- The path to the original photos
+- The directory to store the scaled-down photos
+- The name of the html file to be created, can be set in **variables.json** file as well. I have it as **output.html**, but it can be changed.
+Please notice that the directories to your original and scaled-down photos can be outside of your project directory.
+
+## Notes:
+
+- The main program to run is **visualizar_enpython.py.**.
+
+- If you delete the output.html file, you should delete the scaled-down photos from their subdirectory. Otherwise they will stay there and will never be used.
+
+- The program will not modify or include more photos to the output file if the path to the original photos has already been processed.
+
+- If you don't have git installed, you can visit: [Getting started](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
+- To work with virtual environments you can use 'venv', which already comes with Python. Or you can use virtualenv, conda, etc.
+
+- It is not necessary to have a virtual environment if you are just playing at this point. But it will save you headaches with versions later on with future projects.
+
+## Improvements planned:
+
+Use a database to store the names of the files and directories.
+
+"Beautify" the output file.
+
+Improve my python code!
