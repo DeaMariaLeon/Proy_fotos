@@ -1,6 +1,6 @@
 # Photo project - Proyecto Fotos
 
-This tool reads all photos from a directory and creates a html file with scaled down versions of those photos. The original photo will be shown if its thumbnail is clicked.
+This tool reads all photos from a directory and creates an html file with scaled down versions of those photos. The original photo will be shown if its thumbnail is clicked.
 The scaled down copies of the photos are stored in another directory.
 
 The directory where the original photos will be searched, can have as many subdirectories underneath as needed. You could search the whole hard disk if you wanted (Be aware that it can take several minutes. Start with a small example if you wish).
@@ -48,7 +48,7 @@ The inputs are located in the file ***variables.json***. They are:
 
 - The path to the original photos
 - The directory to store the scaled-down photos
-- The name of the html file to be created, can be set in **variables.json** file as well. I have it as **output.html**, but it can be changed.
+- The name of the html file to be created. I have it as **output.html**. It can be changed.
 Please notice that the directories to your original and scaled-down photos can be outside of your project directory.
 
 ## Notes:
@@ -77,4 +77,6 @@ Calculate the space needed to save the new generated html file.
 
 Improve my python code.
 
-![The final product has all my pics and I can easily find them!](./assets/images/Images.png)
+## The final product
+It will have all the pics. I click and can open the original large version.
+![The final product](./assets/images/Images.png)
