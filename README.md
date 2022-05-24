@@ -3,7 +3,7 @@
 This tool reads all photos from a directory and creates a html file with scaled down versions of those photos. The original photo will be shown if its thumbnail is clicked.
 The scaled down copies of the photos are stored in another directory.
 
-The directory were the photos will be search, can have as many subdirectories underneath as needed. You could search the whole hard disk if you wanted (Be aware that it can take several minutes. Start with a small example if you wish).
+The directory where the original photos will be searched, can have as many subdirectories underneath as needed. You could search the whole hard disk if you wanted (Be aware that it can take several minutes. Start with a small example if you wish).
 
 I did this simple tool because I did not like the way that the mac's "Photos" program works: It merges all the photos into a huge file and if I want to see where the original photo is located it is complicated. I want the original photo to manipulate it, share it, print it or whatever.
 
