@@ -78,5 +78,7 @@ Calculate the space needed to save the new generated html file.
 Improve my python code.
 
 ## The final product
-It will have all the pics. I click and can open the original large version.
+
+It will have all the pics. If I click on photo on created html file, I and can open the original large version.
+
 ![The final product](./assets/images/Images.png)
