@@ -2,7 +2,14 @@
 
 This tool reads all photos from a directory and creates a html file with scaled down versions of those photos. The original photo will be shown if its thumbnail is clicked.
 The scaled down copies of the photos are stored in another directory.
-I have only tested the scripts with a mac. I did this tool because I did not like the way that the mac's "Photos" program works.
+
+The directory were the photos will be search, can have as many subdirectories underneath as needed. You could search the whole hard disk if you wanted (Be aware that it can take several minutes. Start with a small example if you wish).
+
+I did this simple tool because I did not like the way that the mac's "Photos" program works: It merges all the photos into a huge file and if I want to see where the original photo is located it is complicated. I want the original photo to manipulate it, share it, print it or whatever.
+
+The code is not complicated, but it is useful and reliable. I can find all my photos.
+
+I have only tested the scripts with a mac.
 
 ## To see the example output:
 
@@ -70,4 +77,4 @@ Calculate the space needed to save the new generated html file.
 
 Improve my python code.
 
-
+![The final product has all my pics and I can easily find them!](./assets/images/Images.png)
