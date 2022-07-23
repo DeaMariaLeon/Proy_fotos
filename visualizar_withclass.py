@@ -18,16 +18,13 @@ class Output:
     def __init__(self, name):
         self.name = name
 
-    def soup(self):
-        with open(self.name, "r") as html:
-            self.soup = BeautifulSoup(html, "html.parser")
+    def soup(self, html):
+
+        self.soup = BeautifulSoup(html, "html.parser")
 
     def num_of_fotos(self, num_of_fotos):
         self.num = num_of_fotos
         return self.num
-
-    def used(self):
-        self.used_path = True
 
     def __str__(self):
         return f'The name of the output file is {self.name} '
@@ -39,31 +36,6 @@ class Imagen:
 
     def __str__(self):
         return f'{self.origenName} Original Imagen'
-
-
-def check_input(directory):
-    return Path(directory).exists() and not (directory.endswith("/"))
-
-
-def check_outputhtml(path, output_file):
-    result = Output(output_file)
-    result.soup()
-
-    if Path(output_file).exists():
-        #print(dir(result.soup))
-        header = result.soup.find_all('h1', string=path)
-
-
-
-        result.new_file = False
-        numberof_as = len(result.soup.find_all('a'))
-        last_fotito = result.num_of_fotos(numberof_as)
-
-
-    print(result.soup())
-    print(last_fotito)
-
-    return
 
 def load_constants():
     try:
@@ -77,11 +49,71 @@ def load_constants():
         print("Could not open variables.json file")
     return data, fotito_directory, output_file, path
 
+def check_input(directory):
+    return Path(directory).exists() and not (directory.endswith("/"))
+
+
+def check_outputhtml(path, output_file):
+    result = Output(output_file)
+
+
+    if Path(output_file).exists():
+        #print(dir(result.soup))
+        with open(output_file, "r") as html:
+            result.soup(html)
+        header = result.soup.find_all('h1', string=path)
+
+        if (path in [str(head.string) for head in header]):
+            result.used_path = True
+            print("Path already in html file")
+
+
+        result.new_file = False
+        numberof_as = len(result.soup.find_all('a'))
+        last_fotito = result.num_of_fotos(numberof_as)
+    else:
+        result.num_of_fotos(0)
+
+    return result
+
+
+def process_pics(path, fotito_directory, result):
+    return 'x'
+
+
+def build_html(path, result, fotito_directory):
+    print(result)
+    if result.new_file:
+
+        output = ['<!DOCTYPE html>\n',
+                  '<html>\n',
+                  '<head><title>Fotos de Dea </title></head>\n',
+                  '<body>\n',
+                  '<h1>' + path + '</h1>',
+                  process_pics(path, fotito_directory, result),
+                  '</body>\n',
+                  '</html>\n',
+                  ]
+
+        output_str = ''.join(output)
+        print(output_str)
+    else:
+        result.soup.new_tag("h1")
+
+    return result
+
+
+
+
+#########    Main program    ##########################
+
 data, fotito_directory, output_file, path = load_constants()
 
 if check_input(fotito_directory) and check_input(path):
-    check_outputhtml(path, output_file)
+    result = check_outputhtml(path, output_file)
 
+    if not(result.used_path):
+        print(build_html(path, result, fotito_directory))
 
 """
 if __name__ == '__main__':
