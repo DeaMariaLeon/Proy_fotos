@@ -13,7 +13,7 @@ I have only tested the scripts with a mac.
 
 ## To see the example output:
 
-The file ***output.html*** is an example with just one photo. It can be opened with any browser.
+The file ***output.html*** is an example with just one subdirectory. It can be opened with any browser.
 
 If you don't want to clone or copy the project to your local machine, but want to see the example, you still need the subdirectories of ***Dir_scaled*** and ***Dir_de_prueba***.
 
