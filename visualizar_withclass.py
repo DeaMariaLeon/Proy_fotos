@@ -23,7 +23,7 @@ class Output:
 
         self.soup = BeautifulSoup(html, "html.parser")
 
-    def __repr__(self):
+    def __str__(self):
         return f'The name of the output file is {self.name} '
 
 def load_constants():
@@ -110,6 +110,7 @@ def build_html(path, result, fotito_directory):
                   ]
 
         output_str = ''.join(output)
+        result.soup(output_str)
 
     else:
         tag = result.soup.new_tag("h1")
@@ -130,6 +131,7 @@ if check_input(fotito_directory) and check_input(path):
 
     if not(result.used_path):
         output = build_html(path, result, fotito_directory)
+        print(result)
         write_soup(output_file, output)
 
 else:
