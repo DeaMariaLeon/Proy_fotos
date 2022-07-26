@@ -69,13 +69,11 @@ Please notice that the directories to your original and scaled-down photos can b
 
 ## Improvements planned:
 
-Use a database to store the names of the files and directories.
-
 "Beautify" the output file.
 
 Calculate the space needed to save the new generated html file.
 
-Improve my python code.
+Improve my python code - see if concurrency would make loading pics faster
 
 ## The final product
 
