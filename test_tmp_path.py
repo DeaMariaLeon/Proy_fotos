@@ -39,13 +39,12 @@ def test_1(create_dir1):
 def create_dir2(tmp_path_factory):
 
     newtemp_dir0 = tmp_path_factory.mktemp( DIRECTORY2, numbered=False)
-    newtemp_dir = newtemp_dir0 / "folder1"
-    newtemp_dir.mkdir()
-    newtemp_dir2 = newtemp_dir / "folder2"
-    newtemp_dir2.mkdir()
+
+    newtemp_dir = pathlib.Path(newtemp_dir0 / "folder1/folder2")
+    newtemp_dir.mkdir(parents=True)
+
     yield newtemp_dir0
     shutil.rmtree(str(newtemp_dir0), ignore_errors=False)
-    #shutil.rmtree(str(newtemp_dir0.parent), ignore_errors=False)
 
 def test_2(create_dir2):
     file = '/Users/dealeon/Dir_deprueba1/X661.jpg'
