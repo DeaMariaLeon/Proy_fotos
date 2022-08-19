@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 from ver_fotos_enpath import get_names
@@ -171,11 +170,8 @@ if check_input(fotito_directory) and check_input(path):
 else:
     print("Please check your path names in variables.json file")
 
-"""
-if __name__ == '__main__':
 
-    file = Output('output_test.html')
-    print(file)
-    print(file.num)
+#if __name__ == '__main__':
 
-"""
+#    file = Output('output_test.html')
+
