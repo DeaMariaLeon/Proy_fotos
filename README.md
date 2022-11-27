@@ -29,7 +29,7 @@ I used:
 - beautifulsoup4==4.11.1
 - numpy==1.22.4
 - pathlib==1.0.1
-- Pillow==9.1.1
+- Pillow==9.3.0
 
 There is a file ***requirements.txt*** that you can use if you want to use pip to install the libraries.
 First you need to be inside the project's subdirectory with:
